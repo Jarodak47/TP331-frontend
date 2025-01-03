@@ -1,0 +1,19 @@
+image: docker:stable
+
+stages:
+  - build_image
+
+build_image:
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  stage: build_image
+  only:
+    - main
+    - tags
+  script:
+    - docker login $CI_REGISTRY -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    - docker build -t $CI_REGISTRY/Jarodak47/TP331-backend:latest .
+    - docker push $CI_REGISTRY/Jarodak47/TP331-backend:latest
